@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+  <style> a {margin: 10px;} </style>
     <title>Python Flask Bucket List App</title>
 
 
@@ -9,6 +10,40 @@
 
     <link href="https://getbootstrap.com/docs/3.3/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
     <link href="../static/signup.css" rel="stylesheet">
+    <script src="../static/js/jquery-3.4.1.min.js"></script>
+
+    <script>
+        $(function() {
+            $.ajax({
+                url: '/getWish',
+                type: 'GET',
+                success: function(res) {
+                    console.log(res);
+                    var div = $('<div>')
+    .attr('class', 'list-group-flush')
+    .append($('<a>')
+        .attr('class', 'list-group-item active')
+        .append($('<h4>')
+            .attr('class', 'list-group-item-heading'),
+            $('<p>')
+            .attr('class', 'list-group-item-text')));
+
+                    var wishObj = JSON.parse(res);
+                    var wish = '';
+
+                    $.each(wishObj, function(index, value) {
+                      wish = $(div).clone();
+                      $(wish).find('h4').text(value.Title);
+                      $(wish).find('p').text(value.Description);
+                      $('.jumbotron').append(wish);
+                    });
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        });
+  </script>
 
 
 </head>
@@ -22,6 +57,9 @@
                     <li class="nav-item">
                       <a class="nav-link active" href="/logout">Logout</a>
                     </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="/showAddWish">Add Wish</a>
+                    </li>
                 </ul>
             </nav>
             <h3 class="text-muted">Python Flask App</h3>
@@ -29,8 +67,8 @@
 
         <div class="jumbotron">
             <h1>Welcome Home !!</h1>
-
         </div>
+
 
 
         <footer class="footer">
