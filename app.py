@@ -14,6 +14,8 @@ mysql = MySQL()
 app = Flask(__name__)
 
 app.secret_key = ''
+# Default setting
+pageLimit = 2
 
 
 # Flask MySQL Configurations
@@ -146,20 +148,33 @@ def deleteWish():
         conn.close()
 
 
-@app.route('/getWish')
+@app.route('/getWish',methods=['POST'])
 def getWish():
     try:
         if session.get('user'):
             _user = session.get('user')
+            _limit = pageLimit
+            _offset = request.form['offset']
+            _total_records = 0
 
             # Connect to MySQL and fetch data
             con = mysql.connect()
             cursor = con.cursor()
-            cursor.callproc('sp_GetWishByUser',(_user,))
+            cursor.callproc('sp_GetWishByUser',(_user,_limit,_offset,_total_records))
             wishes = cursor.fetchall()
             #print(wishes)
 
+            cursor.close()
+
+            cursor = con.cursor()
+            # Again, I think this is where I'm having issues...
+            cursor.execute('SELECT @_sp_GetWishByUser_3')
+
+            outParam = cursor.fetchall()
+
+            response = []
             wishes_dict = []
+
             for wish in wishes:
                 wish_dict = {
                     'ID': wish[0],
@@ -168,7 +183,10 @@ def getWish():
                     'Date': wish[4]}
                 wishes_dict.append(wish_dict)
             #Convert data into dictionary and then convert into JSON for Return
-            return json.dumps(wishes_dict)
+            response.append(wishes_dict)
+            response.append({'total':outParam[0][0]})
+
+            return json.dumps(response)
 
         else:
             return render_template('error.html', error = 'Unauthorized Access')
