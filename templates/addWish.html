@@ -12,6 +12,61 @@
 
     <script src="../static/js/jquery-3.4.1.min.js"></script>
 
+    <script src="../static/js/jquery.ui.widget.js"></script>
+
+    <script type="text/javascript" src="../static/js/jquery.fileupload.js"></script>
+
+    <script type="text/javascript" src="../static/js/jquery.fileupload-process.js"></script>
+
+    <script type="text/javascript" src="../static/js/jquery.fileupload-ui.js"></script>
+
+    <script>
+
+    $(function() {
+        $('#fileupload').fileupload({
+            url: 'upload',
+            dataType: 'json',
+            add: function(e, data) {
+                data.submit();
+            },
+            success: function(response, status) {
+                console.log(response);
+                var filePath = 'static/Uploads/' + response.filename;
+                $('#imgUpload').attr('src', filePath);
+
+                $('#filePath').val(filePath);
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    })
+
+    </script>
+
+    <style>
+        .btn-file {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-file input[type=file] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            min-width: 100%;
+            min-height: 100%;
+            font-size: 100px;
+            text-align: right;
+            filter: alpha(opacity=0);
+            opacity: 0;
+            outline: none;
+            background: white;
+            cursor: inherit;
+            display: block;
+        }
+    </style>
+
 
 </head>
 
@@ -40,26 +95,59 @@
 
                     <!-- Text input-->
                     <div class="form-group">
-                        <label class="col-md-4 control-label" for="txtTitle">Title</label>
-                        <div class="col-md-7">
-                            <input id="txtTitle" name="inputTitle" type="text" placeholder="placeholder" class="form-control input-md">
-                        </div>
+                      <label for="txtTitle">Title</label>
+
+                       <input id="txtTitle" name="inputTitle" type="text" placeholder="placeholder" class="form-control input-md">
                     </div>
 
                     <!-- Textarea -->
                     <div class="form-group">
-                        <label class="col-md-4 control-label" for="txtPost">Post</label>
-                        <div class="col-md-7">
-                            <textarea class="form-control" id="txtPost" name="inputDescription"></textarea>
-                        </div>
+                      <label for="txtPost">Description</label>
+
+                        <textarea class="form-control" id="txtPost" name="inputDescription"></textarea>
+
                     </div>
+
+                    <div class="form-group">
+                        <label for="txtPost">Photos</label>
+
+                        <div class="input-group">
+                            <span class="input-group-btn">
+                            <span class="btn btn-primary btn-file">
+                                Browse&hellip; <input type="file" id="fileupload" name="file" multiple>
+                            </span>
+                            </span>
+                            <div class="pull-right">
+                                <img id="imgUpload" style="width: 140px; height: 140px;" class="img-thumbnail">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label>Mark this as private and not visible to others.</label>
+                        <br/>
+                        <input name="private" type="checkbox"> Mark as Private <span><svg class="bi bi-lock" width="1em" height="1em" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="--darkreader-inline-fill:currentColor;" data-darkreader-inline-fill="">
+                          <path fill-rule="evenodd" d="M13.655 9H6.333c-.264 0-.398.068-.471.121a.73.73 0 00-.224.296 1.626 1.626 0 00-.138.59V15c0 .342.076.531.14.635.064.106.151.18.256.237a1.122 1.122 0 00.436.127l.013.001h7.322c.264 0 .398-.068.471-.121a.73.73 0 00.224-.296 1.627 1.627 0 00.138-.59V10c0-.342-.076-.531-.14-.635a.658.658 0 00-.255-.237 1.123 1.123 0 00-.45-.128zm.012-1H6.333C4.5 8 4.5 10 4.5 10v5c0 2 1.833 2 1.833 2h7.334c1.833 0 1.833-2 1.833-2v-5c0-2-1.833-2-1.833-2zM6.5 5a3.5 3.5 0 117 0v3h-1V5a2.5 2.5 0 00-5 0v3h-1V5z" clip-rule="evenodd"></path>
+                        </svg></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Have you already accomplished this?</label>
+                        <br/>
+                        <input name="done" type="checkbox"> Mark as Done <span><svg class="bi bi-check" width="1em" height="1em" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="--darkreader-inline-fill:currentColor;" data-darkreader-inline-fill="">
+                          <path fill-rule="evenodd" d="M15.854 5.646a.5.5 0 010 .708l-7 7a.5.5 0 01-.708 0l-3.5-3.5a.5.5 0 11.708-.708L8.5 12.293l6.646-6.647a.5.5 0 01.708 0z" clip-rule="evenodd"></path>
+                        </svg></span>
+                    </div>
+
+
+                    <input type="hidden" name="filePath" id="filePath"></input>
 
                     <!-- Button -->
                     <div class="form-group">
-                        <label class="col-md-4 control-label" for="singlebutton"></label>
-                        <div class="col-md-4">
-                            <input id="singlebutton" name="singlebutton" class="btn btn-primary" type="submit" value="Publish" />
-                        </div>
+                      <p class="text-center">
+                         <input id="singlebutton" name="singlebutton" class="btn btn-primary" type="submit" value="Publish" />
+                     </p>
                     </div>
 
                 </fieldset>
