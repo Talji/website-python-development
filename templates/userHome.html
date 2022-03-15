@@ -239,9 +239,11 @@
                 },
                 success: function(response, status) {
 
-                    var filePath = 'static/Uploads/' + response.filename;
+                    var filePath = '/static/Uploads/' + response.filename;
+                    
                     $('#imgUpload').attr('src', filePath);
                     $('#filePath').val(filePath);
+                    console.log('success');
 
                 },
                 error: function(error) {
@@ -336,7 +338,7 @@
 
                     <nav>
                         <ul class="pagination">
-                          // li we'll create dynamically
+                         <!//li we'll create dynamically>
                         </ul>
                     </nav>
 
@@ -433,7 +435,7 @@
 
 
         <footer class="footer">
-            <p>&copy; Company 2015</p>
+            <p>&copy; Talji Productions 2022</p>
         </footer>
 
     </div>

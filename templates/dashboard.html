@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Python Flask Bucket List App</title>
+
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">-->
+
+    <link href="https://getbootstrap.com/docs/3.3/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+
+    <script src="../static/js/jquery-3.4.1.min.js"></script>
+
+    <script>
+      $(function() {
+          $.ajax({
+              url: '/getAllWishes',
+              type: 'GET',
+              success: function(response) {
+                  console.log(response);
+                  var data = JSON.parse(response);
+
+                  var itemsPerRow = 0;
+                  var div = $('<div>').attr('class', 'row');
+                  for (var i = 0; i < data.length; i++){
+
+                      if (itemsPerRow  < 3) {
+
+                        if (i == data.length - 1) {
+                          div.append(CreateThumb(data[i].Id, data[i].Title, data[i].Description, data[i].FilePath));
+                          $('.well').append(div);
+                        } else {
+                            div.append(CreateThumb(data[i].Id, data[i].Title, data[i].Description, data[i].FilePath));
+                            itemsPerRow++;
+                        }
+                      } else {
+                          $('.well').append(div);
+                          div = $('<div>').attr('class', 'row');
+                          div.append(CreateThumb(data[i].Id, data[i].Title, data[i].Description, data[i].FilePath));
+                          if (i == data.length - 1) {
+                              $('.well').append(div);
+                          }
+                          itemsPerRow = 1;
+                      }
+                  }
+              },
+              error: function(error){
+                  console.log(error);
+              }
+          });
+      })
+
+      function CreateThumb(id, title, desc, filepath) {
+
+          var mainDiv = $('<div>').attr('class', 'col-sm-4 col-md-4');
+
+          var thumbNail = $('<div>').attr('class', 'thumbnail');
+
+          var img = $('<img>').attr({
+              'src': filepath,
+              'data-holder-rendered': true,
+              'style': 'height: 150px; width: 150px; display: block'
+          });
+
+          var caption = $('<div>').attr('class', 'caption');
+
+          var title = $('<h3>').text(title);
+
+          var desc = $('<p>').text(desc);
+
+          var p = $('<p>');
+
+          var btn = $('<button>').attr({
+              'id': 'btn_' + id,
+              'type': 'button',
+              'class': 'btn btn-danger btn-sm'
+          });
+
+          var span = $('<span>').attr({
+              'class': 'glyphicon glyphicon-thumbs-up',
+              'aria-hidden': 'true'
+          });
+
+          p.append(btn.append(span));
+
+          caption.append(title);
+          caption.append(desc);
+          caption.append(p);
+
+          thumbNail.append(img);
+          thumbNail.append(caption);
+          mainDiv.append(thumbNail);
+          return mainDiv;
+      }
+
+      $(document).on('click', '[id^="btn_"]', function() {
+        // Event function can be added here
+        $.ajax({
+            url: '/addUpdateLike',
+            method: 'POST',
+            data: {
+                wish: $(this).attr('id').split('_')[1],
+                like: 1
+            },
+            success: function(response) {
+              console.log(response);
+            },
+            error: function(error) {
+              console.log(error);
+            }
+        });
+      });
+
+    </script>
+
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="header">
+            <nav>
+                <ul class="nav nav-pills pull-right">
+                    <li role="presentation" class="active"><a href="#">Dashboard</a></li>
+                    <li role="presentation"><a href="/userHome">My List</a></li>
+                    <li role="presentation"><a href="/showAddWish">Add Item</a></li>
+                    <li role="presentation"><a href="/logout">Logout</a></li>
+                </ul>
+            </nav>
+            <h3 class="text-muted">Python Flask App</h3>
+        </div>
+
+        <div class="well">
+          <!-- We'll populate this dynamically -->
+
+
+
+        </div>
+</body>
+<footer class="footer">
+    <p>&copy; Talji Productions 2022</p>
+</footer>
+</html>
